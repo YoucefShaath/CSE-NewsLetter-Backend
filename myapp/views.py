@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Post, Comment, User, LikedPost, SavedPost
+from .models import Post, Comment, User, LikedPost, SavedPost, DepartmentSubscription
 from .serializers import PostSerializer, UserSerializer, CommentSerializer
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
@@ -98,5 +98,38 @@ class UserSavedPosts(generics.ListAPIView):
         user = generics.get_object_or_404(User, username=username)
         return Post.objects.filter(savedpost__user=user).order_by('-savedpost__id')
 
-    
 
+class ToggleDepartmentFollowView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        department = request.data.get('department')
+
+        if not department or department not in User.Department.values:
+            return Response(
+                {'error': 'Invalid department'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        subscription, created = DepartmentSubscription.objects.get_or_create(
+            user=request.user,
+            department=department
+        )
+
+        if created:
+            return Response(
+                {
+                    'department': department,
+                    'following': True
+                },
+                status=status.HTTP_200_OK
+            )
+
+        subscription.delete()
+        return Response(
+            {
+                'department': department,
+                'following': False
+            },
+            status=status.HTTP_200_OK
+        )
