@@ -12,9 +12,14 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.save(update_fields=['first_name', 'last_name'])
 
 class UserSerializer(serializers.ModelSerializer):
+    subscriptions = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'department', 'role', 'image']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'department', 'role', 'image', 'subscriptions']
+
+    def get_subscriptions(self, obj):
+        return list(obj.subscriptions.values_list('department', flat=True))
 
 class CommentSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
