@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
-from .models import Post, Comment, LikedPost, SavedPost, User
+from .models import Post, Comment, LikedPost, SavedPost, User, Notification
 
 class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True)
@@ -62,3 +62,33 @@ class PostSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return SavedPost.objects.filter(post=obj, user=request.user).exists()
         return False
+
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    department = serializers.SerializerMethodField()
+    message = serializers.SerializerMethodField()
+    time = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Notification
+        fields = [
+            'id',
+            'department',
+            'message',
+            'time',
+            'is_read',
+        ]
+
+    def get_department(self, obj):
+        if obj.post and obj.post.department:
+            return obj.post.department
+        return "General"
+
+    def get_message(self, obj):
+        if obj.post:
+            return obj.post.title
+        return "New notification"
+
+    def get_time(self, obj):
+        return obj.created_at

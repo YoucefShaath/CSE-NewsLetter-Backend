@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Post, Comment, User, LikedPost, SavedPost, DepartmentSubscription
-from .serializers import PostSerializer, UserSerializer, CommentSerializer
+from .models import Post, Comment, User, LikedPost, SavedPost, DepartmentSubscription, Notification
+from .serializers import PostSerializer, UserSerializer, CommentSerializer, NotificationSerializer
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
@@ -133,3 +133,13 @@ class ToggleDepartmentFollowView(APIView):
             },
             status=status.HTTP_200_OK
         )
+    
+
+
+def NotificationsView(request):
+    notifications = Notification.objects.filter(
+        recipient=request.user
+    ).order_by('-created_at')
+
+    serializer = NotificationSerializer(notifications, many=True)
+    return Response(serializer.data)
