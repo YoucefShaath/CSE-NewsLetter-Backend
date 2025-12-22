@@ -20,4 +20,5 @@ urlpatterns = [
     path('posts/<int:pk>/like/', views.LikePost.as_view(), name='like_post'),
     path('posts/<int:pk>/save/', views.SavePost.as_view(), name='save_post'),
     path('departments/follow/', views.ToggleDepartmentFollowView.as_view(), name='toggle_department_follow'),
+    path('notifications/', views.NotificationsView,  name='notifications'),
 ]
