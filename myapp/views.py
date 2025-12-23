@@ -3,8 +3,8 @@ from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Post, Comment, User, LikedPost, SavedPost, DepartmentSubscription, Notification
-from .serializers import PostSerializer, UserSerializer, CommentSerializer, NotificationSerializer
+from .models import Post, Comment, User, LikedPost, SavedPost, DepartmentSubscription
+from .serializers import PostSerializer, UserSerializer, CommentSerializer
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
@@ -135,22 +135,15 @@ class ToggleDepartmentFollowView(APIView):
             },
             status=status.HTTP_200_OK
         )
-    
+        
+@api_view(["POST"])
+def social_login(request):
+    email = request.data.get("email")
+    if not email:
+        return Response({"error": "Email required"}, status=400)
 
-
-@api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
-def NotificationsView(request):
-    notifications = Notification.objects.filter(
-        recipient=request.user
-    ).order_by('-created_at')
-
-    serializer = NotificationSerializer(notifications, many=True)
-    return Response(serializer.data)
-
-class NotificationDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = NotificationSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Notification.objects.filter(recipient=self.request.user)
+    user, created = User.objects.get_or_create(
+        email=email, defaults={"username": email.split("@")[0]}
+    )
+    # Optionally: return a JWT if your frontend expects it
+    return Response({"success": True, "user_id": user.id})        
