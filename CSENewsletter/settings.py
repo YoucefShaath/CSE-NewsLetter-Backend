@@ -119,6 +119,11 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False 
 
+# CORS settings for hosted frontend
+CORS_ALLOWED_ORIGINS = [
+    "https://cse-news-letter.vercel.app",
+]
+
 ROOT_URLCONF = 'CSENewsletter.urls'
 
 TEMPLATES = [
