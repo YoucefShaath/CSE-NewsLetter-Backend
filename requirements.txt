@@ -7,4 +7,5 @@ django-allauth
 cloudinary
 django-cloudinary-storage
 Pillow
+cryptography
 gunicorn==20.1.0
