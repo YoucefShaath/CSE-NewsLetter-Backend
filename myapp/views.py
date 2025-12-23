@@ -154,3 +154,16 @@ class NotificationDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Notification.objects.filter(recipient=self.request.user)
+    
+
+@api_view(["POST"])
+def social_login(request):
+    email = request.data.get("email")
+    if not email:
+        return Response({"error": "Email required"}, status=400)
+
+    user, created = User.objects.get_or_create(
+        email=email, defaults={"username": email.split("@")[0]}
+    )
+    # Optionally: return a JWT if your frontend expects it
+    return Response({"success": True, "user_id": user.id})         
