@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('dj-rest-auth/google/', views.GoogleLogin.as_view(), name='google_login'),
     path('user/profile/', views.UserProfileView.as_view(), name='user_profile'),
     path('users/<str:username>/', views.UserDetailView.as_view(), name='user_detail'),
     path('users/<str:username>/liked/', views.UserLikedPosts.as_view(), name='user_liked_posts'),

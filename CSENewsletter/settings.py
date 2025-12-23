@@ -25,7 +25,14 @@ SECRET_KEY = 'django-insecure-+w%yhn*erqbd&vlwyew5lc1ansfjfi9-l&h#=rukdt!)c%bmk4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "cse-news-letter.vercel.app",
+    "www.cse-news-letter.vercel.app",
+    "cse-news-letter.vercel.app",
+    "www.cse-news-letter.vercel.app",
+]
 
 
 # Application definition
@@ -47,7 +54,10 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'dj_rest_auth.registration',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 SITE_ID = 1
@@ -93,11 +103,23 @@ REST_AUTH = {
     'REGISTER_SERIALIZER': 'myapp.serializers.CustomRegisterSerializer',
 }
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'VERIFIED_EMAIL': True,
+    }
+}
+
+# Fix: Use correct setting for Allauth login method
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-# New allauth settings format (optional but recommended to silence warnings)
-# ACCOUNT_LOGIN_METHODS = {'email'} 
+ACCOUNT_USERNAME_REQUIRED = False 
 
 ROOT_URLCONF = 'CSENewsletter.urls'
 
@@ -170,20 +192,41 @@ STATIC_URL = 'static/'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://localhost:3000",
+    "http://cse-news-letter.vercel.app",
+    "https://cse-news-letter.vercel.app",
+    "https://www.cse-news-letter.vercel.app",
+    "http://www.cse-news-letter.vercel.app",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
+    "https://localhost:3000",
+    "http://cse-news-letter.vercel.app",
+    "https://cse-news-letter.vercel.app",
+    "https://www.cse-news-letter.vercel.app",
+    "http://www.cse-news-letter.vercel.app",
 ]
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 
 import os
 
-# Define where Django should store user-uploaded files (relative to BASE_DIR)
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Define the base URL from which media files will be served
-MEDIA_URL = '/media/'
+# Cloudinary configuration
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dupxr3maq',  
+    'API_KEY': '788816241281633',       
+    'API_SECRET': 'Z2MxujT9oJZBIas_0JWJQ9UVGQg', 
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'

@@ -3,6 +3,9 @@ from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from dj_rest_auth.registration.views import SocialLoginView
 from .models import Post, Comment, User, LikedPost, SavedPost, DepartmentSubscription, Notification
 from .serializers import PostSerializer, UserSerializer, CommentSerializer, NotificationSerializer
 
@@ -156,14 +159,10 @@ class NotificationDetail(generics.RetrieveUpdateDestroyAPIView):
         return Notification.objects.filter(recipient=self.request.user)
     
 
-@api_view(["POST"])
-def social_login(request):
-    email = request.data.get("email")
-    if not email:
-        return Response({"error": "Email required"}, status=400)
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    callback_url = "http://localhost:3000"
+    client_class = OAuth2Client
 
-    user, created = User.objects.get_or_create(
-        email=email, defaults={"username": email.split("@")[0]}
-    )
-    # Optionally: return a JWT if your frontend expects it
-    return Response({"success": True, "user_id": user.id})         
+# Do not use open(), os.path, or local file serving for media files.
+# Use the .url property of FileField/ImageField to get the Cloudinary URL.

@@ -24,7 +24,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     department = models.CharField(max_length=15, choices=Department.choices, default=Department.General)
     role = models.CharField(max_length=15, choices=Role.choices, default=Role.Member)
-    image = models.ImageField(upload_to='user_images/' , blank=True, null=True)
+    image = models.ImageField(upload_to='user_images/' , blank=True, null=True, default='https://res.cloudinary.com/dupxr3maq/image/upload/v1766494071/default-profile_hahfgw.svg')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
