@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
-from .models import Post, Comment, LikedPost, SavedPost, User
+from .models import Post, Comment, LikedPost, SavedPost, User, Notification
 
 class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True)
@@ -43,9 +43,10 @@ class PostSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         request = self.context.get('request')
-        if request and hasattr(request, 'user'):
+        if request and request.user and request.user.is_authenticated:
             user = request.user
-            if user.role not in [User.Role.Manager, User.Role.Assistant]:
+            # Ensure user has role attribute
+            if hasattr(user, 'role') and user.role not in [User.Role.Manager, User.Role.Assistant]:
                 if 'department' not in data or not data['department']:
                      raise serializers.ValidationError({"department": "This field is required."})
         return data
@@ -67,3 +68,33 @@ class PostSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return SavedPost.objects.filter(post=obj, user=request.user).exists()
         return False
+
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    department = serializers.SerializerMethodField()
+    message = serializers.SerializerMethodField()
+    time = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Notification
+        fields = [
+            'id',
+            'department',
+            'message',
+            'time',
+            'is_read',
+        ]
+
+    def get_department(self, obj):
+        if obj.post and obj.post.department:
+            return obj.post.department
+        return "General"
+
+    def get_message(self, obj):
+        if obj.post:
+            return obj.post.title
+        return "New notification"
+
+    def get_time(self, obj):
+        return obj.created_at

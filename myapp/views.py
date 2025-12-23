@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions, status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Post, Comment, User, LikedPost, SavedPost, DepartmentSubscription
 from .serializers import PostSerializer, UserSerializer, CommentSerializer
-from rest_framework.decorators import api_view
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
@@ -21,6 +21,7 @@ class UserDetailView(generics.RetrieveAPIView):
 
 class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

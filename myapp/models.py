@@ -92,3 +92,4 @@ class Notification(models.Model):
 def create_general_subscription(sender, instance, created, **kwargs):
     if created:
         DepartmentSubscription.objects.get_or_create(user=instance, department=User.Department.General)
+
