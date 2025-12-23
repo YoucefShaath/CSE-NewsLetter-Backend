@@ -170,10 +170,29 @@ class NotificationDetail(generics.RetrieveUpdateDestroyAPIView):
         return Notification.objects.filter(recipient=self.request.user)
     
 
+
+from rest_framework.exceptions import APIException
+from django.http import JsonResponse
+import traceback
+
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
     callback_url = "http://localhost:3000"
     client_class = OAuth2Client
+
+    def post(self, request, *args, **kwargs):
+        try:
+            return super().post(request, *args, **kwargs)
+        except Exception as e:
+            tb = traceback.format_exc()
+            from django.http import HttpResponse
+            import json
+            error_data = {
+                'error': 'Google login failed',
+                'details': str(e),
+                'trace': tb
+            }
+            return HttpResponse(json.dumps(error_data), content_type='application/json', status=400)
 
 
 # New view to update user role

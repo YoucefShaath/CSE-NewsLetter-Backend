@@ -1,12 +1,14 @@
 # myapp/adapters.py
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model 
+
+User = get_user_model() 
 
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
-        # If user already exists, connect the social account
         if sociallogin.is_existing:
             return
+        
         email = sociallogin.account.extra_data.get("email")
         if email:
             try:
