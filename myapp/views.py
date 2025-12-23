@@ -208,3 +208,19 @@ class UpdateUserRoleView(APIView):
         user.role = serializer.validated_data['role']
         user.save(update_fields=['role'])
         return Response({'message': f"Role updated to {user.role}"})
+    
+class FollowedDepartmentsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, user_id):
+        followed = DepartmentSubscription.objects.filter(user_id=user_id).values_list('department', flat=True)
+        return Response(list(followed))
+class FollowedDepartmentsPostsView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        followed_departments = DepartmentSubscription.objects.filter(
+            user=self.request.user
+        ).values_list('department', flat=True)
+        return Post.objects.filter(department__in=followed_departments).order_by('-created_at')
