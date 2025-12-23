@@ -1,3 +1,5 @@
+from rest_framework.permissions import IsAdminUser
+from rest_framework import serializers
 from django.shortcuts import render
 from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view, permission_classes
@@ -172,3 +174,23 @@ class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
     callback_url = "http://localhost:3000"
     client_class = OAuth2Client
+
+
+# New view to update user role
+class PresidentOnlyPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and getattr(request.user, 'role', None) == User.Role.President
+
+class UpdateUserRoleView(APIView):
+    permission_classes = [PresidentOnlyPermission]
+
+    class InputSerializer(serializers.Serializer):
+        role = serializers.ChoiceField(choices=User.Role.choices)
+
+    def post(self, request, username):
+        user = generics.get_object_or_404(User, username=username)
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user.role = serializer.validated_data['role']
+        user.save(update_fields=['role'])
+        return Response({'message': f"Role updated to {user.role}"})

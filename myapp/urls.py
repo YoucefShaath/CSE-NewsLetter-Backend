@@ -18,6 +18,7 @@ urlpatterns = [
     path('users/<str:username>/saved/', views.UserSavedPosts.as_view(), name='user_saved_posts'),
     path('posts/', views.PostList.as_view(), name='post_list'),
     path('posts/<int:pk>/', views.PostDetail.as_view(), name='post_detail'),
+    path('users/<str:username>/update-role/', views.UpdateUserRoleView.as_view(), name='update_user_role'),
     path('posts/<int:pk>/comments/', views.PostCommentList.as_view(), name='post_comment_list'),
     path('posts/<int:pk>/like/', views.LikePost.as_view(), name='like_post'),
     path('posts/<int:pk>/save/', views.SavePost.as_view(), name='save_post'),
