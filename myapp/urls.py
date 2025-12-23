@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from .views import social_login
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -20,4 +21,5 @@ urlpatterns = [
     path('posts/<int:pk>/like/', views.LikePost.as_view(), name='like_post'),
     path('posts/<int:pk>/save/', views.SavePost.as_view(), name='save_post'),
     path('departments/follow/', views.ToggleDepartmentFollowView.as_view(), name='toggle_department_follow'),
+    path("api/social-login/", social_login),
 ]

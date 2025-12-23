@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
+    'allauth.socialaccount.providers.google',
 ]
 
 SITE_ID = 1
@@ -115,6 +116,18 @@ TEMPLATES = [
         },
     },
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    }
+}
 
 WSGI_APPLICATION = 'CSENewsletter.wsgi.application'
 
@@ -185,4 +198,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = "none"  # or "optional" during dev
+SOCIALACCOUNT_QUERY_EMAIL = True     # ensures allauth queries email from Google
+SOCIALACCOUNT_ADAPTER = "myapp.adapters.MySocialAccountAdapter"
