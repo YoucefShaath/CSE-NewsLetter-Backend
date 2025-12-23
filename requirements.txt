@@ -1,0 +1,11 @@
+Django>=6.0
+djangorestframework
+django-cors-headers
+djangorestframework-simplejwt
+dj-rest-auth
+django-allauth
+cloudinary
+django-cloudinary-storage
+Pillow
+requests
+PyJWT
