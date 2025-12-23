@@ -54,9 +54,13 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'dj_rest_auth.registration',
-    'cloudinary',
-    'cloudinary_storage',
 ]
+import os
+
+
+# Media files (user-uploaded images)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 SITE_ID = 1
 
@@ -215,16 +219,8 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 
-import os
 
 
-# Cloudinary configuration
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dupxr3maq',  
-    'API_KEY': '788816241281633',       
-    'API_SECRET': 'Z2MxujT9oJZBIas_0JWJQ9UVGQg', 
-}
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # Default primary key field type

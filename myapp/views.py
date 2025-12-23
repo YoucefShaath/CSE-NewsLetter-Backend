@@ -196,12 +196,7 @@ class GoogleLogin(SocialLoginView):
 
 
 # New view to update user role
-class PresidentOnlyPermission(permissions.BasePermission):
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and getattr(request.user, 'role', None) == User.Role.President
-
 class UpdateUserRoleView(APIView):
-    permission_classes = [PresidentOnlyPermission]
 
     class InputSerializer(serializers.Serializer):
         role = serializers.ChoiceField(choices=User.Role.choices)
