@@ -138,8 +138,17 @@ class ToggleDepartmentFollowView(APIView):
             },
             status=status.HTTP_200_OK
         )
-    
-
+        
+@api_view(["POST"])
+def social_login(request):
+    email = request.data.get("email")
+    if not email:
+        return Response({"error": "Email required"}, status=400)
+    user, created = User.objects.get_or_create(
+        email=email, defaults={"username": email.split("@")[0]}
+    )
+    # Optionally: return a JWT if your frontend expects it
+    return Response({"success": True, "user_id": user.id})
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
@@ -163,6 +172,3 @@ class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
     callback_url = "http://localhost:3000"
     client_class = OAuth2Client
-
-# Do not use open(), os.path, or local file serving for media files.
-# Use the .url property of FileField/ImageField to get the Cloudinary URL.

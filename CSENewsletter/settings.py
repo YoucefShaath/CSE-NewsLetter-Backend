@@ -30,8 +30,6 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "cse-news-letter.vercel.app",
     "www.cse-news-letter.vercel.app",
-    "cse-news-letter.vercel.app",
-    "www.cse-news-letter.vercel.app",
 ]
 
 
@@ -104,15 +102,15 @@ REST_AUTH = {
 }
 
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email",
         ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
+        "AUTH_PARAMS": {
+            "access_type": "online",
         },
-        'VERIFIED_EMAIL': True,
+        "VERIFIED_EMAIL": True,
     }
 }
 
@@ -230,3 +228,5 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_QUERY_EMAIL = True     # ensures allauth queries email from Google
+SOCIALACCOUNT_ADAPTER = "myapp.adapters.MySocialAccountAdapter"
