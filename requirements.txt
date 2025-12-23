@@ -9,3 +9,6 @@ django-cloudinary-storage
 Pillow
 requests
 PyJWT
+psycopg2
+drf-yasg
+python-dotenv
