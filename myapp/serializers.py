@@ -43,9 +43,10 @@ class PostSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         request = self.context.get('request')
-        if request and hasattr(request, 'user'):
+        if request and request.user and request.user.is_authenticated:
             user = request.user
-            if user.role not in [User.Role.Manager, User.Role.Assistant]:
+            # Ensure user has role attribute
+            if hasattr(user, 'role') and user.role not in [User.Role.Manager, User.Role.Assistant]:
                 if 'department' not in data or not data['department']:
                      raise serializers.ValidationError({"department": "This field is required."})
         return data

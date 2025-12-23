@@ -16,7 +16,6 @@ def create_notifications(sender, instance, created, **kwargs):
                 notifications.append(
                     Notification(
                         recipient=sub.user,
-                        message=f"New post in {author_department} by {instance.author.username}",
                         post=instance
                     )
                 )

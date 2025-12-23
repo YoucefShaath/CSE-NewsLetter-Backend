@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions, status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Post, Comment, User, LikedPost, SavedPost, DepartmentSubscription, Notification
@@ -20,6 +21,7 @@ class UserDetailView(generics.RetrieveAPIView):
 
 class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -136,6 +138,8 @@ class ToggleDepartmentFollowView(APIView):
     
 
 
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
 def NotificationsView(request):
     notifications = Notification.objects.filter(
         recipient=request.user
@@ -143,3 +147,10 @@ def NotificationsView(request):
 
     serializer = NotificationSerializer(notifications, many=True)
     return Response(serializer.data)
+
+class NotificationDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Notification.objects.filter(recipient=self.request.user)
