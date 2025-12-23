@@ -10,9 +10,9 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 def create_superuser():
-    username = "admin" # Change this
-    email = "admin@example.com" # Change this
-    password = "your_secure_password" # Change this
+    username = "admin" 
+    email = "admin@example.com" 
+    password = "12345678" 
 
     if not User.objects.filter(username=username).exists():
         print(f"Creating superuser for {username}...")
